@@ -9,8 +9,10 @@ const routes = express.Router();
 routes.get("/", (req, res) => {
 
   let filename      = req.query.filename as string;
-  let height        = parseInt(req.query.height as string);
-  let width         = parseInt(req.query.width as string);
+  let heightQuery   = req.query.height as string;
+  let widthQuery    = req.query.width as string;
+  let height        = parseInt(heightQuery);
+  let width         = parseInt(widthQuery);
   let inputPath     = `images/original/`;
   let outputPath    = `images/thumbnail/`;
   let inputFile     = `${inputPath}${filename}.jpg`;
@@ -23,26 +25,34 @@ routes.get("/", (req, res) => {
     res.send("Image file name is missing.");
   }
 
+  // make sure at least one of resize dimensions are exist
   // check if both height and width are missing
-  if (height === NaN && width === NaN) {
+  if (heightQuery === undefined && widthQuery === undefined) {
     console.log("Both Width and Height are missing.");
     res.send("Image Hight / Width are missing, kindly send at least one.");
   }
-
   // check if height is missing
-  if (height === NaN) {
+  else if (heightQuery === undefined) {
     console.log("Height is missing");
     resizeOption = { width: width };
     resizeImage();
   }
-
   // check if width is missing
-  if (width === NaN) {
+  else if (widthQuery === undefined) {
     console.log("Width is missing");
     resizeOption = { height: height };
     resizeImage();
   }
+  // then both height and width are exist
+  else {
+    resizeOption = { width: width, height: height };
+    resizeImage();
+  }
   
+  // main function to resize image
+  // check if file is already exist
+  // if exist will send it
+  // if not exist will resize then send
   async function resizeImage() {
     try {
       // check if file exist
@@ -53,7 +63,7 @@ routes.get("/", (req, res) => {
       sharp(outputFile)
         .toBuffer()
         .then((data) => {
-          res.type('image/jpg');
+          res.type('image/jpeg');
           res.send(data);
         });
     } catch (error) {
@@ -61,7 +71,7 @@ routes.get("/", (req, res) => {
       // do the resize process
       console.log("File dose not exist.");
       sharp(inputFile)
-        .resize({ width: width, height: height})
+        .resize(resizeOption)
         .jpeg()
         .toBuffer()
         .then((data) => {
