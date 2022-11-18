@@ -13,26 +13,49 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+//import resize from "../../modules/resize";
 const sharp_1 = __importDefault(require("sharp"));
 const fs_1 = require("fs");
 const routes = express_1.default.Router();
+// main end point for the resize service
 routes.get("/", (req, res) => {
     let filename = req.query.filename;
-    let hight = parseInt(req.query.hight);
+    let height = parseInt(req.query.height);
     let width = parseInt(req.query.width);
     let inputPath = `images/original/`;
     let outputPath = `images/thumbnail/`;
     let inputFile = `${inputPath}${filename}.jpg`;
-    let outputFile = `${outputPath}${filename}_[${width}x${hight}]_thumb.jpg`;
+    let outputFile = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
+    let resizeOption = {};
+    // check if file name is missing
     if (filename === undefined) {
+        console.log("File Name is missing.");
         res.send("Image file name is missing.");
+    }
+    // check if both height and width are missing
+    if (height === NaN && width === NaN) {
+        console.log("Both Width and Height are missing.");
+        res.send("Image Hight / Width are missing, kindly send at least one.");
+    }
+    // check if height is missing
+    if (height === NaN) {
+        console.log("Height is missing");
+        resizeOption = { width: width };
+        resizeImage();
+    }
+    // check if width is missing
+    if (width === NaN) {
+        console.log("Width is missing");
+        resizeOption = { height: height };
+        resizeImage();
     }
     function resizeImage() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                // check if file exist
                 const imageData = yield fs_1.promises.access(outputFile);
                 // file exist
-                // do the resize process
+                // send the file only
                 console.log("File Already Exist.");
                 (0, sharp_1.default)(outputFile)
                     .toBuffer()
@@ -43,20 +66,19 @@ routes.get("/", (req, res) => {
             }
             catch (error) {
                 // file dose not exist
-                // send the file only
+                // do the resize process
                 console.log("File dose not exist.");
                 (0, sharp_1.default)(inputFile)
-                    .resize(width, hight)
+                    .resize({ width: width, height: height })
                     .jpeg()
                     .toBuffer()
                     .then((data) => {
-                    res.type('image/jpg');
+                    res.type('image/jpeg');
                     res.send(data);
                     fs_1.promises.writeFile(outputFile, data);
                 });
             }
         });
     }
-    resizeImage();
 });
 exports.default = routes;

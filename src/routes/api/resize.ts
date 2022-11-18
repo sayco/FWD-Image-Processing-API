@@ -8,33 +8,39 @@ const routes = express.Router();
 // main end point for the resize service
 routes.get("/", (req, res) => {
 
-  let filename = req.query.filename as string;
-  let height = parseInt(req.query.height as string);
-  let width = parseInt(req.query.width as string);
-  let inputPath = `images/original/`;
-  let outputPath = `images/thumbnail/`;
-  let inputFile = `${inputPath}${filename}.jpg`;
-  let outputFile = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
+  let filename      = req.query.filename as string;
+  let height        = parseInt(req.query.height as string);
+  let width         = parseInt(req.query.width as string);
+  let inputPath     = `images/original/`;
+  let outputPath    = `images/thumbnail/`;
+  let inputFile     = `${inputPath}${filename}.jpg`;
+  let outputFile    = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
+  let resizeOption  = {};
 
-  // check if use send the file name
+  // check if file name is missing
   if (filename === undefined) {
+    console.log("File Name is missing.");
     res.send("Image file name is missing.");
   }
 
-  // check if use send the file name
+  // check if both height and width are missing
   if (height === NaN && width === NaN) {
+    console.log("Both Width and Height are missing.");
     res.send("Image Hight / Width are missing, kindly send at least one.");
   }
 
-  // check if use send the file name
+  // check if height is missing
   if (height === NaN) {
-    res.send("Image Hight is missing.");
+    console.log("Height is missing");
+    resizeOption = { width: width };
+    resizeImage();
   }
 
-  // check if use send the file name
+  // check if width is missing
   if (width === NaN) {
-    res.send("Image Width is missing.");
-
+    console.log("Width is missing");
+    resizeOption = { height: height };
+    resizeImage();
   }
   
   async function resizeImage() {
@@ -59,13 +65,12 @@ routes.get("/", (req, res) => {
         .jpeg()
         .toBuffer()
         .then((data) => {
-          res.type('image/jpg');
+          res.type('image/jpeg');
           res.send(data);
           fs.writeFile(outputFile, data);
         });
     }
   }
-  resizeImage();
 });
 
 export default routes;
