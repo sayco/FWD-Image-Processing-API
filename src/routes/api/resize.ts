@@ -1,5 +1,5 @@
 import express from "express";
-import resize from "../../modules/resize";
+//import resize from "../../modules/resize";
 import sharp from "sharp";
 import { promises as fs } from "fs";
 
@@ -9,12 +9,12 @@ const routes = express.Router();
 routes.get("/", (req, res) => {
 
   let filename = req.query.filename as string;
-  let hight = parseInt(req.query.hight as string);
+  let height = parseInt(req.query.height as string);
   let width = parseInt(req.query.width as string);
   let inputPath = `images/original/`;
   let outputPath = `images/thumbnail/`;
   let inputFile = `${inputPath}${filename}.jpg`;
-  let outputFile = `${outputPath}${filename}_[${width}x${hight}]_thumb.jpg`;
+  let outputFile = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
 
   // check if use send the file name
   if (filename === undefined) {
@@ -22,10 +22,21 @@ routes.get("/", (req, res) => {
   }
 
   // check if use send the file name
-  if (hight === undefined && width === undefined) {
+  if (height === NaN && width === NaN) {
     res.send("Image Hight / Width are missing, kindly send at least one.");
   }
 
+  // check if use send the file name
+  if (height === NaN) {
+    res.send("Image Hight is missing.");
+  }
+
+  // check if use send the file name
+  if (width === NaN) {
+    res.send("Image Width is missing.");
+
+  }
+  
   async function resizeImage() {
     try {
       // check if file exist
@@ -44,7 +55,7 @@ routes.get("/", (req, res) => {
       // do the resize process
       console.log("File dose not exist.");
       sharp(inputFile)
-        .resize(width, hight)
+        .resize({ width: width, height: height})
         .jpeg()
         .toBuffer()
         .then((data) => {
