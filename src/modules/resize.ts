@@ -1,24 +1,36 @@
+import express from "express";
 import sharp from "sharp";
 import { promises as fs } from "fs";
 
-let input = fs.open("../imgs/input/*.jpg");
 
-
-const resize = async () => {
-  // sharp(input)
-  // .resize(200, 300, {
-  //   kernel: sharp.kernel.nearest,
-  //   fit: 'contain',
-  //   position: 'right top',
-  //   background: { r: 255, g: 255, b: 255, alpha: 0.5 }
-  // })
-  // .toFile('output.png')
-  // .then(() => {
-  //   // output.png is a 200 pixels wide and 300 pixels high image
-  //   // containing a nearest-neighbour scaled version
-  //   // contained within the north-east corner of a semi-transparent white canvas
-  // });
+async function resizeImage(inputFile, outputFile, width, hight) {
+  try {
+    // check if file exist
+    const imageData = await fs.access(outputFile);
+    // file exist
+    // send the file only
+    console.log("File Already Exist.");
+    sharp(outputFile)
+      .toBuffer()
+      .then((data) => {
+        res.type('image/jpg');
+        res.send(data);
+      });
+  } catch (error) {
+    // file dose not exist
+    // do the resize process
+    console.log("File dose not exist.");
+    sharp(inputFile)
+      .resize(width, hight)
+      .jpeg()
+      .toBuffer()
+      .then((data) => {
+        res.type('image/jpg');
+        res.send(data);
+        fs.writeFile(outputFile, data);
+      });
+  }
 }
 
 
-export default resize;
+export default resizeImage;
