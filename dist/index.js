@@ -11,3 +11,4 @@ app.use("/api", index_1.default);
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+exports.default = app;

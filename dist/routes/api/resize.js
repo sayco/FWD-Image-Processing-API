@@ -20,8 +20,10 @@ const routes = express_1.default.Router();
 // main end point for the resize service
 routes.get("/", (req, res) => {
     let filename = req.query.filename;
-    let height = parseInt(req.query.height);
-    let width = parseInt(req.query.width);
+    let heightQuery = req.query.height;
+    let widthQuery = req.query.width;
+    let height = parseInt(heightQuery);
+    let width = parseInt(widthQuery);
     let inputPath = `images/original/`;
     let outputPath = `images/thumbnail/`;
     let inputFile = `${inputPath}${filename}.jpg`;
@@ -32,23 +34,50 @@ routes.get("/", (req, res) => {
         console.log("File Name is missing.");
         res.send("Image file name is missing.");
     }
+    // make sure at least one of resize dimensions are exist
     // check if both height and width are missing
-    if (height === NaN && width === NaN) {
+    if (heightQuery === undefined && widthQuery === undefined) {
         console.log("Both Width and Height are missing.");
         res.send("Image Hight / Width are missing, kindly send at least one.");
     }
     // check if height is missing
-    if (height === NaN) {
+    else if (heightQuery === undefined) {
+        checkInputImageExistence();
         console.log("Height is missing");
         resizeOption = { width: width };
-        resizeImage();
     }
     // check if width is missing
-    if (width === NaN) {
+    else if (widthQuery === undefined) {
+        checkInputImageExistence();
         console.log("Width is missing");
         resizeOption = { height: height };
-        resizeImage();
     }
+    // then both height and width are exist
+    else {
+        checkInputImageExistence();
+        resizeOption = { width: width, height: height };
+    }
+    // function to check for input image file existence
+    // if file is found will continue the resizing process
+    // if not found will send error message as a response
+    function checkInputImageExistence() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // check if file exist
+                const imageData = yield fs_1.promises.access(inputFile);
+                console.log("Input Image file is found.");
+                resizeImage();
+            }
+            catch (error) {
+                console.log("Input Image file is not found.");
+                res.send("Image File name is not found, kindly check file name.");
+            }
+        });
+    }
+    // main function to resize image
+    // check if resized file is already exist
+    // if exist will send it as a response
+    // if not exist will resize then send it
     function resizeImage() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -56,20 +85,21 @@ routes.get("/", (req, res) => {
                 const imageData = yield fs_1.promises.access(outputFile);
                 // file exist
                 // send the file only
-                console.log("File Already Exist.");
+                console.log("Resized Image file is Already Exist.");
                 (0, sharp_1.default)(outputFile)
                     .toBuffer()
                     .then((data) => {
-                    res.type('image/jpg');
+                    res.type('image/jpeg');
                     res.send(data);
                 });
             }
             catch (error) {
                 // file dose not exist
                 // do the resize process
-                console.log("File dose not exist.");
+                //console.log(error);
+                console.log("Resized Image File dose not exist, will create one.");
                 (0, sharp_1.default)(inputFile)
-                    .resize({ width: width, height: height })
+                    .resize(resizeOption)
                     .jpeg()
                     .toBuffer()
                     .then((data) => {
