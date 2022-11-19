@@ -33,33 +33,48 @@ routes.get("/", (req, res) => {
   }
   // check if height is missing
   else if (heightQuery === undefined) {
+    checkInputImageExistence();
     console.log("Height is missing");
     resizeOption = { width: width };
-    resizeImage();
   }
   // check if width is missing
   else if (widthQuery === undefined) {
+    checkInputImageExistence();
     console.log("Width is missing");
     resizeOption = { height: height };
-    resizeImage();
   }
   // then both height and width are exist
   else {
+    checkInputImageExistence();
     resizeOption = { width: width, height: height };
-    resizeImage();
+  }
+
+  // function to check for input image file existence
+  // if file is found will continue the resizing process
+  // if not found will send error message as a response
+  async function checkInputImageExistence() {
+    try {
+      // check if file exist
+      const imageData = await fs.access(inputFile);
+      console.log("Input Image file is found.");
+      resizeImage();
+    } catch (error) {
+      console.log("Input Image file is not found.");
+      res.send("Image File name is not found, kindly check file name.");
+    }
   }
   
   // main function to resize image
-  // check if file is already exist
-  // if exist will send it
-  // if not exist will resize then send
+  // check if resized file is already exist
+  // if exist will send it as a response
+  // if not exist will resize then send it
   async function resizeImage() {
     try {
       // check if file exist
       const imageData = await fs.access(outputFile);
       // file exist
       // send the file only
-      console.log("File Already Exist.");
+      console.log("Resized Image file is Already Exist.");
       sharp(outputFile)
         .toBuffer()
         .then((data) => {
@@ -69,7 +84,8 @@ routes.get("/", (req, res) => {
     } catch (error) {
       // file dose not exist
       // do the resize process
-      console.log("File dose not exist.");
+      //console.log(error);
+      console.log("Resized Image File dose not exist, will create one.");
       sharp(inputFile)
         .resize(resizeOption)
         .jpeg()
