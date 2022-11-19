@@ -1,0 +1,1 @@
+GET /api/resize?filename=udacity&height=250&width=250 200 - 35.802 ms
