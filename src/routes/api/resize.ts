@@ -4,7 +4,9 @@ import { promises as fs } from "fs";
 
 const routes = express.Router();
 
-// main end point for the resize service
+/**
+ *  main end point for the resize service
+ *  */
 routes.get("/", (req, res) => {
 
   let filename      = req.query.filename as string;
@@ -17,8 +19,6 @@ routes.get("/", (req, res) => {
   let inputFile     = `${inputPath}${filename}.jpg`;
   let outputFile    = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
   let resizeOption  = {};
-
-
 
   // make sure at least one of resize dimensions are exist
   // check if no queries provided by the user
@@ -74,10 +74,12 @@ routes.get("/", (req, res) => {
     }
   }
   
-  // main function to resize image
-  // check if resized file is already exist
-  // if exist will send it as a response
-  // if not exist will resize then send it
+  /**
+   * main function to resize image
+   * check if resized file is already exist
+   * if exist will send it as a response
+   * if not exist will resize then send it
+   */
   async function resizeImage() {
     try {
       // check if file exist

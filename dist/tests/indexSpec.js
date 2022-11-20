@@ -32,6 +32,7 @@ describe('Testing Image Processing API', () => {
     it("Testing resize endpoint", () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield axios_1.default.get(resizeEndpoint);
         expect(res.status).toBe(200);
+        expect(res.headers['content-type']).toBe('text/html; charset=utf-8');
     }));
 });
 describe('Testing Image Resizing API', () => {
