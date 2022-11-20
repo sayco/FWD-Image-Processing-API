@@ -7,7 +7,9 @@
     "test": "npm run build && jasmine",
     "start": "nodemon ./src/index.ts",
     "build": "npx tsc",
-    "app": "npm run build && node ./dist/."
+    "app": "npm run build && node ./dist/.",
+    "eslint": "npx eslint --fix ./src/**/*.ts",
+    "prettier":"npx prettier -w ./src/**/*.ts"
   },
   "keywords": [],
   "author": "",
