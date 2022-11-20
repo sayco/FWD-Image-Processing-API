@@ -8,15 +8,15 @@ const routes = express.Router();
  *  main end point for the resize service
  *  */
 routes.get("/", (req, res) => {
-  let filename = req.query.filename as string;
-  let heightQuery = req.query.height as string;
-  let widthQuery = req.query.width as string;
-  let height = parseInt(heightQuery);
-  let width = parseInt(widthQuery);
-  let inputPath = `images/original/`;
-  let outputPath = `images/thumbnail/`;
-  let inputFile = `${inputPath}${filename}.jpg`;
-  let outputFile = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
+  const filename = req.query.filename as string;
+  const heightQuery = req.query.height as string;
+  const widthQuery = req.query.width as string;
+  const height = parseInt(heightQuery);
+  const width = parseInt(widthQuery);
+  const inputPath = `images/original/`;
+  const outputPath = `images/thumbnail/`;
+  const inputFile = `${inputPath}${filename}.jpg`;
+  const outputFile = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
   let resizeOption = {};
 
   // make sure at least one of resize dimensions are exist
