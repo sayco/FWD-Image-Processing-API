@@ -8,22 +8,27 @@ const routes = express.Router();
  *  main end point for the resize service
  *  */
 routes.get("/", (req, res) => {
-
-  let filename      = req.query.filename as string;
-  let heightQuery   = req.query.height as string;
-  let widthQuery    = req.query.width as string;
-  let height        = parseInt(heightQuery);
-  let width         = parseInt(widthQuery);
-  let inputPath     = `images/original/`;
-  let outputPath    = `images/thumbnail/`;
-  let inputFile     = `${inputPath}${filename}.jpg`;
-  let outputFile    = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
-  let resizeOption  = {};
+  let filename = req.query.filename as string;
+  let heightQuery = req.query.height as string;
+  let widthQuery = req.query.width as string;
+  let height = parseInt(heightQuery);
+  let width = parseInt(widthQuery);
+  let inputPath = `images/original/`;
+  let outputPath = `images/thumbnail/`;
+  let inputFile = `${inputPath}${filename}.jpg`;
+  let outputFile = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
+  let resizeOption = {};
 
   // make sure at least one of resize dimensions are exist
   // check if no queries provided by the user
-  if (filename === undefined && heightQuery === undefined && widthQuery === undefined) {
-    res.send("Welcome to Resize API, kindly Add image file name and the required dimensions.");
+  if (
+    filename === undefined &&
+    heightQuery === undefined &&
+    widthQuery === undefined
+  ) {
+    res.send(
+      "Welcome to Resize API, kindly Add image file name and the required dimensions."
+    );
     return;
   }
   // check if file name is missing
@@ -73,7 +78,7 @@ routes.get("/", (req, res) => {
       res.send("Image File name is not found, kindly check file name.");
     }
   }
-  
+
   /**
    * main function to resize image
    * check if resized file is already exist
@@ -90,7 +95,7 @@ routes.get("/", (req, res) => {
       sharp(outputFile)
         .toBuffer()
         .then((data) => {
-          res.type('image/jpeg');
+          res.type("image/jpeg");
           res.send(data);
         });
     } catch (error) {
@@ -103,7 +108,7 @@ routes.get("/", (req, res) => {
         .jpeg()
         .toBuffer()
         .then((data) => {
-          res.type('image/jpeg');
+          res.type("image/jpeg");
           res.send(data);
           fs.writeFile(outputFile, data);
         });
