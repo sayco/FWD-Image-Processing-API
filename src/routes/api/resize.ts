@@ -1,5 +1,4 @@
 import express from "express";
-//import resize from "../../modules/resize";
 import sharp from "sharp";
 import { promises as fs } from "fs";
 
@@ -19,34 +18,45 @@ routes.get("/", (req, res) => {
   let outputFile    = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
   let resizeOption  = {};
 
-  // check if file name is missing
-  if (filename === undefined) {
-    console.log("File Name is missing.");
-    res.send("Image file name is missing.");
-  }
+
 
   // make sure at least one of resize dimensions are exist
+  // check if no queries provided by the user
+  if (filename === undefined && heightQuery === undefined && widthQuery === undefined) {
+    res.send("Welcome to Resize API, kindly Add image file name and the required dimensions.");
+    return;
+  }
+  // check if file name is missing
+  else if (filename === undefined) {
+    //console.log("File Name is missing.");
+    res.send("Image file name is missing.");
+    return;
+  }
   // check if both height and width are missing
-  if (heightQuery === undefined && widthQuery === undefined) {
-    console.log("Both Width and Height are missing.");
+  else if (heightQuery === undefined && widthQuery === undefined) {
+    // console.log("Both Width and Height are missing.");
     res.send("Image Hight / Width are missing, kindly send at least one.");
+    return;
   }
   // check if height is missing
   else if (heightQuery === undefined) {
     checkInputImageExistence();
-    console.log("Height is missing");
+    // console.log("Height is missing");
     resizeOption = { width: width };
+    return;
   }
   // check if width is missing
   else if (widthQuery === undefined) {
     checkInputImageExistence();
-    console.log("Width is missing");
+    // console.log("Width is missing");
     resizeOption = { height: height };
+    return;
   }
   // then both height and width are exist
   else {
     checkInputImageExistence();
     resizeOption = { width: width, height: height };
+    return;
   }
 
   // function to check for input image file existence
@@ -56,10 +66,10 @@ routes.get("/", (req, res) => {
     try {
       // check if file exist
       const imageData = await fs.access(inputFile);
-      console.log("Input Image file is found.");
+      // console.log("Input Image file is found.");
       resizeImage();
     } catch (error) {
-      console.log("Input Image file is not found.");
+      // console.log("Input Image file is not found.");
       res.send("Image File name is not found, kindly check file name.");
     }
   }
@@ -74,7 +84,7 @@ routes.get("/", (req, res) => {
       const imageData = await fs.access(outputFile);
       // file exist
       // send the file only
-      console.log("Resized Image file is Already Exist.");
+      // console.log("Resized Image file is Already Exist.");
       sharp(outputFile)
         .toBuffer()
         .then((data) => {
@@ -85,7 +95,7 @@ routes.get("/", (req, res) => {
       // file dose not exist
       // do the resize process
       //console.log(error);
-      console.log("Resized Image File dose not exist, will create one.");
+      // console.log("Resized Image File dose not exist, will create one.");
       sharp(inputFile)
         .resize(resizeOption)
         .jpeg()
