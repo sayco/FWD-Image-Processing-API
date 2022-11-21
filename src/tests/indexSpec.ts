@@ -1,6 +1,9 @@
-import axios from "axios";
 import router from "../routes/index";
 import server from "../index";
+import resizeImage from "../modules/resizeImage";
+import axios from "axios";
+import request from 'supertest';
+
 
 server.use("/", router);
 
@@ -11,6 +14,13 @@ const resizeWrongFilename = "udacityyyy";
 const resizeWidth = "200";
 const resizeHeight = "200";
 
+const testFilename = "udacity";
+const testInputPath = `images/original/`;
+const testOutputPath = `images/thumbnail/`;
+const testInputFile = `${testInputPath}${testFilename}.jpg`;
+const testOutputFile = `${testOutputPath}${testFilename}_test.jpg`;
+const testWidth = 200;
+const testHeight = 200;
 /**
  * Testing the API root and endpoints
  */
@@ -38,6 +48,14 @@ describe("Testing Image Resizing API", () => {
     expect(res.status).toBe(200);
     expect(res.headers["content-type"]).toBe("text/html; charset=utf-8");
   });
+
+  // testing image processing
+  it("Test specs for image processing ", async () => {
+  expect(async () => {
+    await resizeImage(testInputFile, testWidth, testHeight, testThumbPath);
+  }).not.toThrow();
+});
+
   // testing resize endpoint with image file name and the required image width only
   it("responds to /resize with file name and width only", async () => {
     const res = await axios.get(
