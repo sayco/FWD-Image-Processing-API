@@ -1,6 +1,6 @@
 import express from "express";
-import sharp from "sharp";
 import { promises as fs } from "fs";
+import resizeImage from "../../modules/resizeImage";
 
 const routes = express.Router();
 
@@ -17,7 +17,12 @@ routes.get("/", (req, res) => {
   const outputPath = `images/thumbnail/`;
   const inputFile = `${inputPath}${filename}.jpg`;
   const outputFile = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
-  let resizeOption = {};
+  let resizeOption:resizeOptionObj;
+  
+  interface resizeOptionObj {
+    width?: number;
+    height?: number;
+ }
 
   // make sure at least one of resize dimensions are exist
   // check if no queries provided by the user
@@ -67,53 +72,18 @@ routes.get("/", (req, res) => {
   // function to check for input image file existence
   // if file is found will continue the resizing process
   // if not found will send error message as a response
-  async function checkInputImageExistence() {
+  async function checkInputImageExistence():Promise<void>{
     try {
       // check if file exist
       const imageData = await fs.access(inputFile);
       // console.log("Input Image file is found.");
-      resizeImage();
+      resizeImage(res, inputFile, outputFile, resizeOption);
     } catch (error) {
       // console.log("Input Image file is not found.");
       res.send("Image File name is not found, kindly check file name.");
     }
   }
 
-  /**
-   * main function to resize image
-   * check if resized file is already exist
-   * if exist will send it as a response
-   * if not exist will resize then send it
-   */
-  async function resizeImage() {
-    try {
-      // check if file exist
-      const imageData = await fs.access(outputFile);
-      // file exist
-      // send the file only
-      // console.log("Resized Image file is Already Exist.");
-      sharp(outputFile)
-        .toBuffer()
-        .then((data) => {
-          res.type("image/jpeg");
-          res.send(data);
-        });
-    } catch (error) {
-      // file dose not exist
-      // do the resize process
-      //console.log(error);
-      // console.log("Resized Image File dose not exist, will create one.");
-      sharp(inputFile)
-        .resize(resizeOption)
-        .jpeg()
-        .toBuffer()
-        .then((data) => {
-          res.type("image/jpeg");
-          res.send(data);
-          fs.writeFile(outputFile, data);
-        });
-    }
-  }
 });
 
 export default routes;
