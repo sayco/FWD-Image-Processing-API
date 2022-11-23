@@ -1,7 +1,7 @@
 import express from "express";
-import { promises as fs } from "fs";
-import { isStringObject } from "util/types";
+import fs from "fs";
 import resizeImage from "../../modules/resizeImage";
+import path from 'path';
 
 const routes = express.Router();
 
@@ -71,38 +71,54 @@ routes.get("/", (req, res) => {
   }
   // check if height is missing
   else if (heightQuery === undefined) {
-    checkInputImageExistence();
+    checkResizedImageExistence();
     // console.log("Height is missing");
     resizeOption = { width: width };
     return;
   }
   // check if width is missing
   else if (widthQuery === undefined) {
-    checkInputImageExistence();
+    checkResizedImageExistence();
     // console.log("Width is missing");
     resizeOption = { height: height };
     return;
   }
   // then both height and width are exist
   else {
-    checkInputImageExistence();
+    checkResizedImageExistence();
     resizeOption = { width: width, height: height };
     return;
   }
 
-  
+  async function checkResizedImageExistence(): Promise<void> {
+    try {
+      const resizedImageAvaliable = await fs.existsSync(outputFile);
+      // if resized image exist will send cached image
+      // if not found will resize the image then send it
+      if (resizedImageAvaliable) {
+        res.sendFile(path.join(__dirname, `../../../images/thumbnail/${filename}_[${width}x${height}]_thumb.jpg`));
+      } else {
+        checkInputImageExistence();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   // function to check for input image file existence
   // if file is found will continue the resizing process
   // if not found will send error message as a response
   async function checkInputImageExistence():Promise<void>{
     try {
       // check if file exist
-      const imageData = await fs.access(inputFile);
-      // console.log("Input Image file is found.");
-      resizeImage(res, inputFile, outputFile, resizeOption);
+      const inputImageAvaliable = await fs.existsSync(inputFile);
+      if (inputImageAvaliable) {
+        resizeImage(res, inputFile, outputFile, resizeOption);
+      } else {
+        res.send("Image File name is not found, kindly check file name.");
+      }
     } catch (error) {
-      // console.log("Input Image file is not found.");
-      res.send("Image File name is not found, kindly check file name.");
+      console.log(error);
     }
   }
 

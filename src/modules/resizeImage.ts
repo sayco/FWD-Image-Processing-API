@@ -18,6 +18,7 @@ async function resizeImage(res:express.Response, inputFile: string, outputFile: 
     try {
       // check if file exist
       const imageData = await fs.access(outputFile);
+      
       // file exist
       // send the file only
       // console.log("Resized Image file is Already Exist.");
