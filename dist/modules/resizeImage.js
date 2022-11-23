@@ -23,32 +23,18 @@ const sharp_1 = __importDefault(require("sharp"));
 function resizeImage(res, inputFile, outputFile, resizeOption) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // check if file exist
-            const imageData = yield fs_1.promises.access(outputFile);
-            // file exist
-            // send the file only
-            // console.log("Resized Image file is Already Exist.");
-            (0, sharp_1.default)(outputFile)
-                .toBuffer()
-                .then((data) => {
-                res.type("image/jpeg");
-                res.send(data);
-            });
-        }
-        catch (error) {
-            // file dose not exist
-            // do the resize process
-            //console.log(error);
-            // console.log("Resized Image File dose not exist, will create one.");
             (0, sharp_1.default)(inputFile)
                 .resize(resizeOption)
                 .jpeg()
                 .toBuffer()
                 .then((data) => {
                 res.type("image/jpeg");
-                res.send(data);
+                res.status(200).send(data);
                 fs_1.promises.writeFile(outputFile, data);
             });
+        }
+        catch (error) {
+            console.log(error);
         }
     });
 }

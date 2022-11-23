@@ -1,7 +1,7 @@
 import express from "express";
 import fs from "fs";
 import resizeImage from "../../modules/resizeImage";
-import path from 'path';
+import path from "path";
 
 const routes = express.Router();
 
@@ -9,7 +9,6 @@ const routes = express.Router();
  *  main end point for the resize service
  *  */
 routes.get("/", (req, res) => {
-
   const filename = req.query.filename as string;
   const heightQuery = req.query.height as string;
   const widthQuery = req.query.width as string;
@@ -19,12 +18,12 @@ routes.get("/", (req, res) => {
   const outputPath = `images/thumbnail/`;
   const inputFile = `${inputPath}${filename}.jpg`;
   const outputFile = `${outputPath}${filename}_[${width}x${height}]_thumb.jpg`;
-  let resizeOption:resizeOptionObj;
-  
+  let resizeOption: resizeOptionObj;
+
   interface resizeOptionObj {
     width?: number;
     height?: number;
- }
+  }
 
   // make sure at least one of resize dimensions are exist
   // check if no queries provided by the user
@@ -33,9 +32,11 @@ routes.get("/", (req, res) => {
     heightQuery === undefined &&
     widthQuery === undefined
   ) {
-    res.status(404).send(
-      "Welcome to Resize API, kindly Add image file name and the required dimensions."
-    );
+    res
+      .status(404)
+      .send(
+        "Welcome to Resize API, kindly Add image file name and the required dimensions."
+      );
     return;
   }
   // check if file name is missing
@@ -45,33 +46,40 @@ routes.get("/", (req, res) => {
   }
   // check if both height and width are missing
   else if (heightQuery === undefined && widthQuery === undefined) {
-    res.status(404).send("Image Hight / Width are missing, kindly send at least one.");
+    res
+      .status(404)
+      .send("Image Hight / Width are missing, kindly send at least one.");
+    return;
+  } else if (Number.isNaN(width) && Number.isNaN(height)) {
+    res
+      .status(404)
+      .send("Image Hight / Width must be numbers, kindly send at least one.");
     return;
   }
-  else if (!(Number.isInteger(width) && Number.isInteger(height))) {
-    res.status(404).send("Image Hight / Width must be numbers, kindly send at least one.");
-    return;
-  }
-  else if (!(Number.isInteger(width))) {
-    res.status(404).send("Image Width must be a numbers, kindly send at least one.");
-    return;
-  }
-  else if (!(Number.isInteger(height))) {
-    res.status(404).send("Image Height must be a numbers, kindly send at least one.");
-    return;
-  }
-  else if (!(width > 0 && height > 0)) {
-    res.status(404).send("Image Hight / Width must greater than zero, kindly send at least one.");
+  // else if (!(Number.isInteger(width))) {
+  //   res.status(404).send("Image Width must be a numbers, kindly send at least one.");
+  //   return;
+  // }
+  // else if (!(Number.isInteger(height))) {
+  //   res.status(404).send("Image Height must be a numbers, kindly send at least one.");
+  //   return;
+  // }
+  else if (!(width > 0 || height > 0)) {
+    res
+      .status(404)
+      .send(
+        "Image Hight / Width must greater than zero, kindly send at least one."
+      );
     return;
   }
   // check if height is missing
-  else if (heightQuery === undefined) {
+  else if (Number.isNaN(height)) {
     checkResizedImageExistence();
     resizeOption = { width: width };
     return;
   }
   // check if width is missing
-  else if (widthQuery === undefined) {
+  else if (Number.isNaN(width)) {
     checkResizedImageExistence();
     resizeOption = { height: height };
     return;
@@ -89,7 +97,14 @@ routes.get("/", (req, res) => {
       // if resized image exist will send cached image
       // if not found will resize the image then send it
       if (resizedImageAvaliable) {
-        res.status(304).sendFile(path.join(__dirname, `../../../images/thumbnail/${filename}_[${width}x${height}]_thumb.jpg`));
+        res
+          .status(304)
+          .sendFile(
+            path.join(
+              __dirname,
+              `../../../images/thumbnail/${filename}_[${width}x${height}]_thumb.jpg`
+            )
+          );
       } else {
         checkInputImageExistence();
       }
@@ -101,20 +116,21 @@ routes.get("/", (req, res) => {
   // function to check for input image file existence
   // if file is found will continue the resizing process
   // if not found will send error message as a response
-  async function checkInputImageExistence():Promise<void>{
+  async function checkInputImageExistence(): Promise<void> {
     try {
       // check if file exist
       const inputImageAvaliable = await fs.existsSync(inputFile);
       if (inputImageAvaliable) {
         resizeImage(res, inputFile, outputFile, resizeOption);
       } else {
-        res.status(404).send("Image File name is not found, kindly check file name.");
+        res
+          .status(404)
+          .send("Image File name is not found, kindly check file name.");
       }
     } catch (error) {
       console.log(error);
     }
   }
-
 });
 
 export default routes;
