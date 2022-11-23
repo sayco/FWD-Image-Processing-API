@@ -1,5 +1,6 @@
 import express from "express";
 import { promises as fs } from "fs";
+import { isStringObject } from "util/types";
 import resizeImage from "../../modules/resizeImage";
 
 const routes = express.Router();
@@ -8,6 +9,7 @@ const routes = express.Router();
  *  main end point for the resize service
  *  */
 routes.get("/", (req, res) => {
+
   const filename = req.query.filename as string;
   const heightQuery = req.query.height as string;
   const widthQuery = req.query.width as string;
@@ -24,6 +26,9 @@ routes.get("/", (req, res) => {
     height?: number;
  }
 
+  console.log(height);
+  console.log(heightQuery);
+  console.log(Number.isInteger(height));
   // make sure at least one of resize dimensions are exist
   // check if no queries provided by the user
   if (
@@ -48,6 +53,22 @@ routes.get("/", (req, res) => {
     res.send("Image Hight / Width are missing, kindly send at least one.");
     return;
   }
+  else if (!(Number.isInteger(width) && Number.isInteger(height))) {
+    res.send("Image Hight / Width must be numbers, kindly send at least one.");
+    return;
+  }
+  else if (!(Number.isInteger(width))) {
+    res.send("Image Width must be a numbers, kindly send at least one.");
+    return;
+  }
+  else if (!(Number.isInteger(height))) {
+    res.send("Image Height must be a numbers, kindly send at least one.");
+    return;
+  }
+  else if (!(width > 0 && height > 0)) {
+    res.send("Image Hight / Width must greater than zero, kindly send at least one.");
+    return;
+  }
   // check if height is missing
   else if (heightQuery === undefined) {
     checkInputImageExistence();
@@ -69,6 +90,7 @@ routes.get("/", (req, res) => {
     return;
   }
 
+  
   // function to check for input image file existence
   // if file is found will continue the resizing process
   // if not found will send error message as a response
