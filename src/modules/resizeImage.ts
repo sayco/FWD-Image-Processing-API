@@ -25,9 +25,9 @@ async function resizeImage(
       .jpeg()
       .toBuffer()
       .then((data) => {
+        fs.writeFile(outputFile, data);
         res.type("image/jpeg");
         res.status(200).send(data);
-        fs.writeFile(outputFile, data);
       });
   } catch (error) {
     console.log(error);

@@ -28,9 +28,9 @@ function resizeImage(res, inputFile, outputFile, resizeOption) {
                 .jpeg()
                 .toBuffer()
                 .then((data) => {
+                fs_1.promises.writeFile(outputFile, data);
                 res.type("image/jpeg");
                 res.status(200).send(data);
-                fs_1.promises.writeFile(outputFile, data);
             });
         }
         catch (error) {
