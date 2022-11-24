@@ -1,11 +1,11 @@
-import express from "express";
+import express, { Response, Request } from "express";
 import resize from "./api/resize";
 
 const routes = express.Router();
 
 routes.use("/resize", resize);
 
-routes.get("/", (req, res) => {
+routes.get("/", (req:Request, res:Response) => {
   res.send("Welcome to Image Processing API.");
 });
 

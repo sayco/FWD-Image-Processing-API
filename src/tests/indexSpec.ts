@@ -69,26 +69,23 @@ describe("Testing Image Resizing API", () => {
     );
   });
   // testing resize endpoint with image file name and the required image width only
-  it("responds to /resize with file name and width only", async () => {
-    const res = await request.get(
-      `${resizeEndpoint}?filename=${resizeFilename}&width=270`
-    );
-    expect(res.header["content-type"]).toBe("image/jpeg");
+  it("responds to /resize with file name and width only", function (){
+    return request.get(
+      `/api/resize?filename=udacity&width=300`
+    ).expect("content-type","image/jpeg");
   });
   // testing resize endpoint with image file name and the required image height only
-  it("responds to /resize with file name and height only", async () => {
-    const res = await request.get(
-      `${resizeEndpoint}?filename=${resizeFilename}&height=250`
-    );
-    expect(res.header["content-type"]).toBe("image/jpeg");
+  it("responds to /resize with file name and height only", function (){
+    return request.get(
+      `/api/resize?filename=udacity&height=290`
+    ).expect("content-type","image/jpeg");
   });
   // testing resize endpoint with image file name and the required image width and height
   it("responds to /resize with file name and height and width", async () => {
     const res = await request.get(
-      `${resizeEndpoint}?filename=${resizeFilename}&width=${resizeWidth}&height=${resizeHeight}`
+      `${resizeEndpoint}?filename=${resizeFilename}&width=260&height=260`
     );
     expect(res.header["content-type"]).toBe("image/jpeg");
-    // console.log(res.header["content-type"]);
   });
 });
 

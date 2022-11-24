@@ -15,11 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
 const sharp_1 = __importDefault(require("sharp"));
 /**
-   * main function to resize image
-   * check if resized file is already exist
-   * if exist will send it as a response
-   * if not exist will resize then send it
-   */
+ * main function to resize image
+ * check if resized file is already exist
+ * if exist will send it as a response
+ * if not exist will resize then send it
+ */
 function resizeImage(res, inputFile, outputFile, resizeOption) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

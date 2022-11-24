@@ -121,6 +121,7 @@ routes.get("/", (req, res) => {
       // check if file exist
       const inputImageAvaliable = await fs.existsSync(inputFile);
       if (inputImageAvaliable) {
+        console.log(resizeOption);
         resizeImage(res, inputFile, outputFile, resizeOption);
       } else {
         res
