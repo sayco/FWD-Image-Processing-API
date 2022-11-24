@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Request, Response} from "express";
 import fs from "fs";
 import resizeImage from "../../modules/resizeImage";
 import path from "path";
@@ -8,7 +8,7 @@ const routes = express.Router();
 /**
  *  main end point for the resize service
  *  */
-routes.get("/", (req, res) => {
+routes.get("/", (req:Request, res:Response):void => {
   const filename = req.query.filename as string;
   const heightQuery = req.query.height as string;
   const widthQuery = req.query.width as string;
