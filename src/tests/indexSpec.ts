@@ -75,7 +75,7 @@ describe("Testing Image Resizing API", () => {
   it("responds to /resize with file name only", async () => {
     try {
       const res = await request.get(
-        `${resizeEndpoint}?filename=${resizeFilename}`
+        `/api/resize?filename=udacity`
       );
       expect(res.text).toBe(
         "Image Hight / Width are missing, kindly send at least one."
@@ -90,7 +90,7 @@ describe("Testing Image Resizing API", () => {
       const res = await request.get(
         `/api/resize?filename=udacity&width=300`
       );
-      expect(res.header["content-type"]).toMatch("image/jpeg");
+      expect(res.type).toMatch("image/jpeg");
     } catch (error) {
       console.log(error);
     }

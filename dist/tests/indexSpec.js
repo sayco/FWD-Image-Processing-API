@@ -79,7 +79,8 @@ describe("Testing Image Resizing API", () => {
     // testing resize endpoint with image file name only without dimensions
     it("responds to /resize with file name only", () => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const res = yield request.get(`${resizeEndpoint}?filename=${resizeFilename}`);
+            const res = yield request.get(`/api/resize?filename=udacity`);
+            console.log(res.type);
             expect(res.text).toBe("Image Hight / Width are missing, kindly send at least one.");
         }
         catch (error) {
@@ -90,7 +91,8 @@ describe("Testing Image Resizing API", () => {
     it("responds to /resize with file name and width only", () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const res = yield request.get(`/api/resize?filename=udacity&width=300`);
-            expect(res.header["content-type"]).toMatch("image/jpeg");
+            console.log(res.type);
+            expect(res.type).toMatch("image/jpeg");
         }
         catch (error) {
             console.log(error);
@@ -100,6 +102,7 @@ describe("Testing Image Resizing API", () => {
     it("responds to /resize with file name and height only", () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const res = yield request.get(`/api/resize?filename=udacity&height=290`);
+            console.log(res.type);
             expect(res.headers["content-type"]).toMatch("image/jpeg");
         }
         catch (error) {
@@ -110,6 +113,7 @@ describe("Testing Image Resizing API", () => {
     it("responds to /resize with file name and height and width", () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const res = yield request.get(`/api/resize?filename=udacity&width=260&height=260`);
+            console.log(res.type);
             expect(res.header["content-type"]).toMatch("image/jpeg");
         }
         catch (error) {
