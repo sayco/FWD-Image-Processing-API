@@ -1,6 +1,5 @@
 .history
 node_modules
-*.jpg
 *.log
 index.js
 resize.js
