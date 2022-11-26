@@ -1482,3 +1482,15 @@ GET /api/resize?filename=udacity&height=290 304 - 2.210 ms
 GET /api/resize?filename=udacity&width=260&height=260 304 - 2.093 ms
 GET /api/resize?filename=udacityyyy&width=200&height=200 404 - 0.793 ms
 GET /api/resize?filename=udacityyyy&width=aa&height=bb 404 - 0.438 ms
+GET /api/resize?filename=sayco&hight=200&width=400 404 - 4.279 ms
+GET /favicon.ico 404 - 2.989 ms
+GET /api/resize?filename=udacity&hight=200&width=400 200 - 301.391 ms
+GET /api/resize?filename=sayco&hight=200&width=400 404 - 1.198 ms
+GET /api/resize?filename=sayco&hight=200&width=0 404 - 0.689 ms
+GET /api/resize?filename=sayco&hight=0&width=400 404 - 1.726 ms
+GET /api/resize?filename=sayco&height=0&width=400 404 - 2.564 ms
+GET /api/resize?filename=sayco&width=400&height=0 404 - 1.597 ms
+GET /api/resize?name=sayco&width=400&height=0 404 - 0.607 ms
+GET /api/image?name=sayco&width=400&height=0 404 - 2.381 ms
+GET /resize?filename=sayco&width=400&height=0 404 - 1.006 ms
+GET /resize?name=sayco&width=400&height=0 404 - 1.577 ms
