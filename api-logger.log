@@ -1642,3 +1642,11 @@ GET /api/resize?filename=udacity&height=290 304 - 2.458 ms
 GET /api/resize?filename=udacity&width=260&height=260 304 - 1.151 ms
 GET /api/resize?filename=udacityyyy&width=200&height=200 404 - 3.451 ms
 GET /api/resize?filename=udacityyyy&width=aa&height=bb 404 - 0.545 ms
+GET /api 200 - 14.744 ms
+GET /api/resize 404 - 1.507 ms
+GET /api/resize?filename=udacity 404 - 0.469 ms
+GET /api/resize?filename=udacity&width=300 200 - 62.579 ms
+GET /api/resize?filename=udacity&height=290 200 - 53.131 ms
+GET /api/resize?filename=udacity&width=260&height=260 200 - 15.672 ms
+GET /api/resize?filename=udacityyyy&width=200&height=200 404 - 0.587 ms
+GET /api/resize?filename=udacityyyy&width=aa&height=bb 404 - 0.453 ms

@@ -31,26 +31,22 @@ const request = supertest(app);
 describe("Testing Image Processing API Response", () => {
   // testing the server is running by checking to the root api respond
   it("Is server running, responds to api root", async () => {
-      const res = await request.get(apiRoot);
-      expect(res.status).toBe(200);
+    const res = await request.get(apiRoot);
+    expect(res.status).toBe(200);
   });
   // testing the resize endpoint
   it("Testing /resize endpoint response", async () => {
-      const res = await request.get(resizeEndpoint);
-      expect(res.status).toBe(404);
+    const res = await request.get(resizeEndpoint);
+    expect(res.status).toBe(404);
   });
 });
 
 describe("Testing resize function", () => {
   // testing image processing
   it("Test specs for image processing ", async () => {
-      expect(async () => {
-        await resizeImage(
-          testInputFile,
-          testOutputFile,
-          testingOptions
-        );
-      }).not.toThrow();
+    expect(async () => {
+      await resizeImage(testInputFile, testOutputFile, testingOptions);
+    }).not.toThrow();
   });
 });
 
@@ -60,50 +56,44 @@ describe("Testing resize function", () => {
 describe("Testing Image Resizing API", () => {
   // testing resize endpoint with image file name only without dimensions
   it("responds to /resize with file name only", async () => {
-      const res = await request.get(
-        `/api/resize?filename=udacity`
-      );
-      expect(res.text).toBe(
-        "Image Hight / Width are missing, kindly send at least one."
-      );
+    const res = await request.get(`/api/resize?filename=udacity`);
+    expect(res.text).toBe(
+      "Image Hight / Width are missing, kindly send at least one."
+    );
   });
   // testing resize endpoint with image file name and the required image width only
   it("responds to /resize with file name and width only", async () => {
-      const res = await request.get(
-        `/api/resize?filename=udacity&width=300`
-      );
-      expect(res.type).toMatch("image/jpeg");
+    const res = await request.get(`/api/resize?filename=udacity&width=300`);
+    expect(res.type).toMatch("image/jpeg");
   });
   // testing resize endpoint with image file name and the required image height only
   it("responds to /resize with file name and height only", async () => {
-      const res = await request.get(
-        `/api/resize?filename=udacity&height=290`
-      );
-      expect(res.headers["content-type"]).toMatch("image/jpeg");
+    const res = await request.get(`/api/resize?filename=udacity&height=290`);
+    expect(res.headers["content-type"]).toMatch("image/jpeg");
   });
   // testing resize endpoint with image file name and the required image width and height
   it("responds to /resize with file name and height and width", async () => {
-      const res = await request.get(
-        `/api/resize?filename=udacity&width=260&height=260`
-      );
-      expect(res.header["content-type"]).toMatch("image/jpeg");
+    const res = await request.get(
+      `/api/resize?filename=udacity&width=260&height=260`
+    );
+    expect(res.header["content-type"]).toMatch("image/jpeg");
   });
 });
 
 describe("Testing Failure response", async () => {
   // testing resize endpoint with wrong image file name
   it("responds to /resize with wrong image file name", async () => {
-      const res = await request.get(
-        `${resizeEndpoint}?filename=${resizeWrongFilename}&width=${resizeWidth}&height=${resizeHeight}`
-      );
-      expect(res.status).toBe(404);
+    const res = await request.get(
+      `${resizeEndpoint}?filename=${resizeWrongFilename}&width=${resizeWidth}&height=${resizeHeight}`
+    );
+    expect(res.status).toBe(404);
   });
 
   // testing resize endpoint with wrong image file name
   it("responds to /resize with wrong hight and width data type", async () => {
-      const res = await request.get(
-        `${resizeEndpoint}?filename=${resizeWrongFilename}&width=aa&height=bb`
-      );
-      expect(res.status).toBe(404);
+    const res = await request.get(
+      `${resizeEndpoint}?filename=${resizeWrongFilename}&width=aa&height=bb`
+    );
+    expect(res.status).toBe(404);
   });
 });

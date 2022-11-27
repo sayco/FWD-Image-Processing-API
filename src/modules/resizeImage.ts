@@ -16,7 +16,7 @@ async function resizeImage(
   inputFile: string,
   outputFile: string,
   resizeOption: resizeOptionObj
-) {
+): Promise<void> {
   try {
     await sharp(inputFile)
       .resize(resizeOption)

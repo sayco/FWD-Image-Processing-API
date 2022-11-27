@@ -5,7 +5,7 @@ const routes = express.Router();
 
 routes.use("/resize", resize);
 
-routes.get("/", (req:Request, res:Response):void => {
+routes.get("/", (req: Request, res: Response): void => {
   res.send("Welcome to Image Processing API.");
 });
 
