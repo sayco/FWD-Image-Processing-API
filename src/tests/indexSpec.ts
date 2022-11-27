@@ -46,7 +46,6 @@ describe("Testing resize function", () => {
   it("Test specs for image processing ", async () => {
       expect(async () => {
         await resizeImage(
-          response,
           testInputFile,
           testOutputFile,
           testingOptions

@@ -122,7 +122,12 @@ routes.get("/", (req:Request, res:Response):void => {
       const inputImageAvaliable = await fs.existsSync(inputFile);
       if (inputImageAvaliable) {
         //console.log(resizeOption);
-        resizeImage(res, inputFile, outputFile, resizeOption);
+        const resizedImageData = await resizeImage(inputFile, outputFile, resizeOption);
+        const resizedImageFile = await fs.readFile(outputFile, (err, data) => {
+          if (err) throw err;
+          res.type("image/jpeg");
+          res.status(200).send(data);
+        });
       } else {
         res
           .status(404)

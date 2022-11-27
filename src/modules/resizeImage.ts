@@ -1,4 +1,3 @@
-import express from "express";
 import { promises as fs } from "fs";
 import sharp from "sharp";
 
@@ -14,20 +13,18 @@ interface resizeOptionObj {
  * if not exist will resize then send it
  */
 async function resizeImage(
-  res: express.Response,
   inputFile: string,
   outputFile: string,
   resizeOption: resizeOptionObj
-): Promise<void> {
+) {
   try {
-    sharp(inputFile)
+    await sharp(inputFile)
       .resize(resizeOption)
       .jpeg()
       .toBuffer()
       .then((data) => {
         fs.writeFile(outputFile, data);
-        res.type("image/jpeg");
-        res.status(200).send(data);
+        //return data;
       });
   } catch (error) {
     console.log(error);
