@@ -3,8 +3,11 @@ import fs from "fs";
 import routes from "./routes/index";
 import morgan from "morgan";
 import path from "path";
+import dotenv from "dotenv";
 
-const port = 3000;
+dotenv.config();
+
+const port = process.env.PORT;
 const app = express();
 const logStream = fs.createWriteStream(path.join("./", "api-logger.log"), {
   flags: "a",
@@ -23,3 +26,6 @@ app.listen(port, () => {
 });
 
 export default app;
+
+
+  

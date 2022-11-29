@@ -1,4 +1,5 @@
 .history
+.env
 node_modules
 *.log
 index.js
