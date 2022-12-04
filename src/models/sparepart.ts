@@ -55,7 +55,7 @@ export class
   }
 
   // delete spare part with specific ID
-  async delete(partID : String) : Promis<Part>
+  async delete(partID : String) : Promise<Part>
   {
     try {
       const conn = await client.connect();

@@ -5,5 +5,12 @@
     "database": "my_new_database",
     "user": "postgres",
     "password": "postgres_password"
+  },
+  "test": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "spare_parts_test",
+    "user": "spare_parts_api_user_test",
+    "password": "test_password"
   }
 }
